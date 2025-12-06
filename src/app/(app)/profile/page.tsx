@@ -27,15 +27,6 @@ export default function ProfilePage() {
             setUserEmail(user.email || '')
             console.log('ProfilePage: Checking admin status for user:', user.id)
 
-            // Check bypass cookie
-            const isBypassed = document.cookie.includes('admin-bypass=true')
-            if (isBypassed) {
-                console.log('ProfilePage: Admin bypass cookie detected')
-                setIsAdmin(true)
-                setLoading(false)
-                return
-            }
-
             // Check database
             const { data: profile, error } = await supabase
                 .from('profiles')
