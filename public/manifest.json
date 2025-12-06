@@ -1,0 +1,17 @@
+{
+    "name": "Detox Digital 7 Dias",
+    "short_name": "DD7",
+    "description": "Seu guia para desconectar e reconectar em 7 dias.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0f172a",
+    "theme_color": "#0f172a",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "/icon.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

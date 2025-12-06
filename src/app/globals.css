@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+:root {
+  --background: #020617;
+  /* Slate 950 */
+  --foreground: #f8fafc;
+  /* Slate 50 */
+  --primary: #f43f5e;
+  /* Rose 500 */
+  --secondary: #fbbf24;
+  /* Amber 400 */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* Custom Utilities */
+@layer utilities {
+  .glass-panel {
+    @apply bg-white/10 backdrop-blur-xl border border-white/10 shadow-2xl;
+  }
+
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-lg hover:bg-white/10 transition-all duration-300;
+  }
+
+  /* Premium Dark Glass Icon */
+  .glass-icon {
+    @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-inner text-white;
+  }
+
+  .text-glow {
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+  }
+
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Global Styles */
+body {
+  background-color: #020617;
+  color: var(--foreground);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+
+  /* 
+    Complex Gradient Mesh based on User Request:
+    - Top Left: Yellow/Orange (Sun/Energy)
+    - Center: Pink/Rose (Passion/Heart)
+    - Bottom Right: Green/Teal (Nature/Detox)
+    Overlay on Dark Background for "Premium" feel.
+  */
+  background-image:
+    radial-gradient(circle at 0% 0%, rgba(251, 191, 36, 0.4) 0%, transparent 50%),
+    /* Amber/Yellow Top Left */
+    radial-gradient(circle at 100% 0%, rgba(244, 63, 94, 0.4) 0%, transparent 50%),
+    /* Rose/Pink Top Right */
+    radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.2) 0%, transparent 50%),
+    /* Emerald/Green Bottom Right */
+    radial-gradient(circle at 0% 100%, rgba(249, 115, 22, 0.2) 0%, transparent 50%);
+  /* Orange Bottom Left */
+
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* Animations */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
