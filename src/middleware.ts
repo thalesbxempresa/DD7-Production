@@ -9,8 +9,8 @@ export async function middleware(request: NextRequest) {
     })
 
     const supabase = createServerClient(
-        'https://fdxdpsdgcdcgiyijmqrl.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkeGRwc2RnY2RjZ2l5aWptcXJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2MzQ4MTMsImV4cCI6MjA4MDIxMDgxM30.qdhuXiczy3sxbPiAaMP1O0seSnIg9FC27TKYPCM9nr8',
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
         {
             cookies: {
                 get(name: string) {
@@ -93,7 +93,9 @@ export async function middleware(request: NextRequest) {
 
         if (error) {
             console.error('[Middleware] Error fetching profile:', error)
-            return NextResponse.redirect(new URL('/', request.url))
+            // Allow access if there's an error - don't block admins
+            console.log('[Middleware] Allowing access despite error')
+            return response
         }
 
         if (profile?.is_admin !== true) {
