@@ -81,16 +81,28 @@ export async function middleware(request: NextRequest) {
             return NextResponse.redirect(new URL('/login', request.url))
         }
 
-        const { data: profile } = await supabase
+        console.log('[Middleware] Admin check for user:', user.id, user.email)
+
+        const { data: profile, error } = await supabase
             .from('profiles')
             .select('is_admin')
             .eq('id', user.id)
             .single()
 
+        console.log('[Middleware] Profile query result:', { profile, error })
+
+        if (error) {
+            console.error('[Middleware] Error fetching profile:', error)
+            return NextResponse.redirect(new URL('/', request.url))
+        }
+
         if (profile?.is_admin !== true) {
+            console.log('[Middleware] User is NOT admin, redirecting to home')
             // Not an admin, redirect to home
             return NextResponse.redirect(new URL('/', request.url))
         }
+
+        console.log('[Middleware] User IS admin, allowing access')
     }
 
     return response
