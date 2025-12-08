@@ -72,7 +72,7 @@ export default function LoginPage() {
                         <span className="text-3xl font-bold text-white">D</span>
                     </div>
                     <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight text-glow">
-                        Bem-vindo de volta
+                        Bem-vindo(a)
                     </h1>
                     <p className="text-slate-400 text-sm md:text-base">
                         Continue sua jornada de detox. <span className="text-xs text-teal-400 font-mono bg-teal-400/10 px-2 py-0.5 rounded-full border border-teal-400/20">v2.1</span>
