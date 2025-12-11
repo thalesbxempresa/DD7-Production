@@ -38,7 +38,15 @@ export default function UsersPage() {
     // Form states
     const [newUser, setNewUser] = useState({ name: '', email: '', password: '', isAdmin: false })
     const [creating, setCreating] = useState(false)
+    const [newUser, setNewUser] = useState({ name: '', email: '', password: '', isAdmin: false })
+    const [creating, setCreating] = useState(false)
     const [updating, setUpdating] = useState(false)
+
+    // Password Reset
+    const [showResetModal, setShowResetModal] = useState(false)
+    const [resettingUser, setResettingUser] = useState<{ id: string, email: string } | null>(null)
+    const [customPassword, setCustomPassword] = useState('')
+    const [resetting, setResetting] = useState(false)
 
     useEffect(() => {
         fetchUsers()
@@ -193,26 +201,44 @@ export default function UsersPage() {
         }
     }
 
-    const handleResetPassword = async (userId: string, email: string) => {
-        if (!confirm(`Resetar senha de ${email}?`)) return
+    const openResetModal = (userId: string, email: string) => {
+        setResettingUser({ id: userId, email })
+        setCustomPassword('')
+        setShowResetModal(true)
+    }
 
+    const handleConfirmReset = async () => {
+        if (!resettingUser) return
+
+        setResetting(true)
         try {
             const response = await fetch('/api/admin/users/reset-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId })
+                body: JSON.stringify({
+                    userId: resettingUser.id,
+                    newPassword: customPassword || undefined // Envia undefined se vazio para gerar aleatória
+                })
             })
 
             const data = await response.json()
 
             if (response.ok) {
-                alert(`Senha resetada!\nSenha temporária: ${data.tempPassword}\n\nCopie e envie ao usuário.`)
+                if (customPassword) {
+                    alert(`Senha atualizada para "${customPassword}" com sucesso!`)
+                } else {
+                    alert(`Senha resetada!\nSenha temporária: ${data.tempPassword}\n\nCopie e envie ao usuário.`)
+                }
+                setShowResetModal(false)
+                setResettingUser(null)
+                setCustomPassword('')
             } else {
                 alert(data.error || 'Erro ao resetar senha.')
             }
         } catch (error) {
             alert('Erro de conexão.')
         }
+        setResetting(false)
     }
 
     const exportToCSV = () => {
@@ -443,7 +469,7 @@ export default function UsersPage() {
                                         <td className="px-6 py-4">
                                             <div className="flex items-center justify-end gap-2">
                                                 <button
-                                                    onClick={() => handleResetPassword(user.id, user.email)}
+                                                    onClick={() => openResetModal(user.id, user.email)}
                                                     className="text-slate-400 hover:text-blue-400 p-2 rounded-lg hover:bg-blue-400/10 transition-colors"
                                                     title="Resetar Senha"
                                                 >
@@ -628,6 +654,50 @@ export default function UsersPage() {
                                 className="w-full bg-teal-600 hover:bg-teal-500 text-white font-bold py-3 rounded-xl transition-colors mt-4 disabled:opacity-50"
                             >
                                 {updating ? 'Atualizando...' : 'Salvar Alterações'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {/* Reset Password Modal */}
+            {showResetModal && resettingUser && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                    <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl">
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-lg font-bold text-white">Resetar Senha</h3>
+                            <button onClick={() => {
+                                setShowResetModal(false)
+                                setResettingUser(null)
+                            }} className="text-slate-400 hover:text-white">
+                                <X className="w-6 h-6" />
+                            </button>
+                        </div>
+
+                        <div className="space-y-4">
+                            <p className="text-sm text-slate-400">
+                                Definindo nova senha para: <span className="text-white font-medium">{resettingUser.email}</span>
+                            </p>
+
+                            <div>
+                                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Nova Senha (Opcional)</label>
+                                <input
+                                    type="text"
+                                    value={customPassword}
+                                    onChange={(e) => setCustomPassword(e.target.value)}
+                                    placeholder="Deixe vazio para gerar aleatória"
+                                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white focus:border-teal-500 outline-none"
+                                />
+                                <p className="text-xs text-slate-500 mt-2">
+                                    Se deixar vazio, o sistema irá gerar uma senha segura aleatória.
+                                </p>
+                            </div>
+
+                            <button
+                                onClick={handleConfirmReset}
+                                disabled={resetting}
+                                className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition-colors mt-4 disabled:opacity-50"
+                            >
+                                {resetting ? 'Processando...' : customPassword ? 'Definir Senha' : 'Gerar Senha Aleatória'}
                             </button>
                         </div>
                     </div>

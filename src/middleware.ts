@@ -60,14 +60,18 @@ export async function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname
 
     // 1. Auth Routes (Login/Register) - Redirect to Home if already logged in
+    // EXCEÇÃO: /update-password e /auth/callback precisam funcionar com usuário logado
     if (user && (path === '/login' || path === '/register' || path === '/onboarding')) {
         return NextResponse.redirect(new URL('/', request.url))
     }
 
+
     // 2. Protected Routes (Home, Day, Profile, Admin) - Redirect to Login if NOT logged in
+    // EXCEÇÃO: /auth/callback precisa funcionar SEM usuário para processar o código PKCE
     if (!user &&
         !path.startsWith('/login') &&
         !path.startsWith('/register') &&
+        !path.startsWith('/auth/callback') &&
         !path.startsWith('/_next') &&
         !path.startsWith('/api') &&
         !path.includes('.') // static files like favicon.ico, manifest.json

@@ -69,8 +69,8 @@ export default function LoginPage() {
 
         try {
             const redirectUrl = typeof window !== 'undefined'
-                ? `${window.location.origin}/update-password`
-                : 'http://localhost:3000/update-password'
+                ? `${window.location.origin}/auth/callback?next=/update-password`
+                : 'http://localhost:3000/auth/callback?next=/update-password'
 
             const { error } = await supabase.auth.resetPasswordForEmail(email, {
                 redirectTo: redirectUrl
@@ -120,8 +120,8 @@ export default function LoginPage() {
                                 setSuccessMsg(null)
                             }}
                             className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${mode === 'existing'
-                                    ? 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white shadow-lg'
-                                    : 'text-slate-400 hover:text-slate-200'
+                                ? 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white shadow-lg'
+                                : 'text-slate-400 hover:text-slate-200'
                                 }`}
                         >
                             Já tenho Senha
@@ -134,8 +134,8 @@ export default function LoginPage() {
                                 setSuccessMsg(null)
                             }}
                             className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-bold transition-all ${mode === 'first-access'
-                                    ? 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white shadow-lg'
-                                    : 'text-slate-400 hover:text-slate-200'
+                                ? 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white shadow-lg'
+                                : 'text-slate-400 hover:text-slate-200'
                                 }`}
                         >
                             Primeiro Acesso
